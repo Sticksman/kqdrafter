@@ -15,6 +15,13 @@ class Player(object):
         self.name = name
         self.role_scores = role_scores
 
+    def derive_score_by_name(self, score):
+        main_role = self.get_main_role()
+        cls_by_names = cls_by_name_dict()
+        klass = cls_by_names[main_role]
+        derivation_table = klass.derivation_table()
+        return derivation_table[main_role](score)
+
     def get_main_role(self):
         for role, scores in self.role_scores.iteritems():
             if scores['main']:
@@ -22,18 +29,36 @@ class Player(object):
 
         return DEFAULT_ROLE, 1
 
+    def _get_score(self, name):
+        score = self.role_scores.get(name)
+        if score:
+            return score
+        return self.derive_score_by_name(name)
+
     def get_queen_score(self):
-        queen_score = self.role_scores.get('queen')
-        if queen_score:
-            return queen_score
+        return self._get_score('queen')
+
+    def get_speed_score(self):
+        return self._get_score('speed')
 
     def get_warrior_score(self):
-        warrior_score
+        return self._get_score('warrior')
+
+    def get_berry_score(self):
+        return self._get_score('berry')
+
+    def get_snail_score(self):
+        return self._get_score('snail')
+
+
+def cls_by_name_dict():
+    roles = Role.__subclasses__()
+    return dict([(cls.name(), cls) for cls in roles])
 
 
 class Role(object):
     @classmethod
-    def derivation_table:
+    def derivation_table(cls):
         raise NotImplementedError("Please implement the role's derivation table")
 
     @classmethod
