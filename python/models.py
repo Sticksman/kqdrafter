@@ -16,18 +16,17 @@ class Player(object):
         self.role_scores = role_scores
 
     def derive_score_by_name(self, score):
-        main_role = self.get_main_role()
+        main_role, _ = self.get_main_role()
         cls_by_names = cls_by_name_dict()
-        klass = cls_by_names[main_role]
         derivation_table = klass.derivation_table()
-        return derivation_table[main_role](score)
+        return derivation_table[main_role.name()](score)
 
     def get_main_role(self):
         for role, scores in self.role_scores.iteritems():
             if scores['main']:
-                return role, scores['score']
+                return cls_by_name_dict()[role], scores['score']
 
-        return DEFAULT_ROLE, 1
+        return cls_by_name_dict()[DEFAULT_ROLE], 1
 
     def _get_score(self, name):
         score = self.role_scores.get(name)
@@ -166,7 +165,7 @@ class Snail(Role):
     def derivation_table(cls):
         return {
             'queen': lambda score: min(score + 3, 5),
-            'speed': lambda score: min(score + 3, 5),
+            'speed': lambda score: min(score + 4, 5),
             'warrior': lambda score: min(score + 3, 5),
             'berry': lambda score: score * 1.1
         }
