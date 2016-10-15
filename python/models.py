@@ -89,18 +89,10 @@ class Queen(Role):
         return 'queen'
 
     def team_modifier(self):
-        score = math.floor(self.score)
-        if score == 5:
-            return 1.75
-        elif score == 4:
-            return 1.25
-        elif score == 3:
-            return 1
-        elif score == 2:
-            return 0.75
-        elif score == 1:
-            return 0.5
-        return 0.1
+        remainder = self.score - 3
+        remainder_sign = 1 if remainder > 0 else -1
+        multiplier = 1 + (remainder_sign * 0.25 * 2 ** remainder)
+        return multiplier
 
 
 class Speed(Role):
@@ -148,16 +140,7 @@ class Berry(Role):
         return 'berry'
 
     def self_modifier(self):
-        score = math.floor(score)
-        if score == 5:
-            return 0.8
-        elif score == 4:
-            return 0.64
-        elif score == 3:
-            return 0.48
-        elif score == 2:
-            return 0.32
-        return 0.16
+        return max(0.16 * self.score, 0.16)
 
 
 class Snail(Role):
@@ -175,14 +158,4 @@ class Snail(Role):
         return 'snail'
 
     def self_modifier(self):
-        score = math.floor(score)
-        if score == 5:
-            return 0.75
-        elif score == 4:
-            return 0.60
-        elif score == 3:
-            return 0.45
-        elif score == 2:
-            return 0.3
-        return 0.15
-
+        return max(0.15 * self.score, 0.15)
